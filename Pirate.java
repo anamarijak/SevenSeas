@@ -1,4 +1,12 @@
-
+/* Klasa Pirate predstavlja protivnika u igri.
+ * Sadrži pozicije pirata na ploci, smjerove u kojima
+ * se pirate moze kretati kao i provjeru da li je
+ * pirat unisten ili nije.
+ * 
+ * @author Ana-Marija Knezevic
+ * @version 1.0.0 (alfa)
+ * @since 18/1/2019
+ */
 public class Pirate {
 	private int row;
 	private int col;

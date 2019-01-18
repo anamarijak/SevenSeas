@@ -9,19 +9,34 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/* GUI klasa se koristi za prikaz grafickog interfejsa za igraca.
+ * Generiramo ga pomocu prozorcica na kojem se nalazi panel s nizom
+ * dugmica koji predstavljaju polja igre. Na dugmice je zakacen key 
+ * listener. Za igranje je moguce koristiti brojeve od 1-9 kao i slova
+ * na tipkovnici koja se obicno koriste za drugog igraca u igrama (w-a-s-d)
+ *
+ * @author Ana-Marija Knezevic
+ * @version 1.0.0 (alfa)
+ * @since 18/1/2019
+ * 
+ */
 public class GUI {
 	static JFrame frame;
 	static JPanel sea;
 
 	public static void main(String[] args) {
-		
+		// inicijaliziramo novu igru na pocetku
 		Game game = new Game();
 		game.init();
+		// na pocetku izbacimo poruku za pocetak igre
 		JOptionPane.showMessageDialog(frame, "Start?");
+
+		// dobavljamo broj redova i kolona
 		int rowNum = game.board.getDimRow();
 		int colNum = game.board.getDimCol();
 
-		frame = new JFrame("SEVEN SEAS");
+		// postavljanje okvira i panela na njega
+		frame = new JFrame("PIRATE HUNT");
 		frame.setSize(800, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -29,26 +44,41 @@ public class GUI {
 		sea.setLayout(new GridLayout(rowNum, colNum));
 		sea.setBackground(Color.getColor(null, new Color(1, 141, 192)));
 
+		// postavljanje dugmica koji predstavljaju nasa polja
 		JButton[][] field = new JButton[rowNum][colNum];
 		for (int i = 0; i < rowNum; i++) {
 			for (int j = 0; j < colNum; j++) {
 				field[i][j] = new JButton();
-				field[i][j].setSize(50, 50);
+				field[i][j].setSize(60, 60);
 				field[i][j].setEnabled(false);
 
 				sea.add(field[i][j]);
 				field[i][j].setBorder(BorderFactory.createLineBorder(Color.getColor(null, new Color(1, 131, 178))));
 			}
 		}
-		
+
+		// dodajemo panel na frame
 		frame.add(sea);
 		frame.setResizable(false);
 		frame.setVisible(true);
 
+		/*
+		 * key listener za nasu igru //igra je omogucena na brojevima i slovima
+		 * 
+		 * 1 ili z - left-down 
+		 * 2 ili s - down 
+		 * 3 ili c - right-down 
+		 * 4 ili a - left
+		 * 5 ili d - right
+		 * 7 ili q - left-up 
+		 * 8 ili w - up 
+		 * 9 ili e - right-up
+		 * 
+		 */
 		KeyListener kl = new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
+
 				if (e.getKeyCode() == 49 || e.getKeyCode() == 97 || e.getKeyCode() == 89) {
 					game.ship.changeDirection(Ship.LEFT_DOWN);
 					System.out.println("IDEMO GORE-LIJEVO");
@@ -85,15 +115,19 @@ public class GUI {
 					game.ship.changeDirection(Ship.LEFT);
 					System.out.println("IDEMO LIJEVO");
 				}
+				// pozivamo metodu za kretanje brodica
 				game.moveShip();
+				// "pauziramo thread na kratko, kako bi dobili osjecaj da igrac igra poslije nas
+				// inace bi se kretanje vrsila istovremeno (nasem oku vidljivo)
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				// pozivamo metodu za kretanje piratea
 				game.movePirates();
-				game.board.toConsole();
+				// game.board.toConsole();
 			}
 
 			@Override
@@ -107,23 +141,37 @@ public class GUI {
 				// TODO Auto-generated method stub
 			}
 		};
-
+		// dodajemo key listener na okvir
 		frame.addKeyListener(kl);
 
-		while (game.getLevel() < 10) {
+		// while petlja koja traje sve dok ima level-a
+
+		while (game.getLevel() < game.getNumOfLevels()) {
+
+			// ako je igra gotova restartujemo je pomocu metode restart
+			// te je ponovno inicijaliziramo
 			if (game.end()) {
-				game.restart();
 				game.setGameOver(false);
+				game.restart();
 				game.init();
-
 				JOptionPane.showMessageDialog(frame, "Play again?");
-				// frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+			}
+			// provjeravmao da li je brodic dosao do prolaza za novi level
+			// ako jest onda postavljamo novi level i ponovno pokrecemo igru
 
-			};
 			if (game.nextLevel()) {
 				game.moveToNextLevel();
 				game.init();
 			}
+
+			// postavljamo komponente igre da budu vidljivi tako sto im mjenjamo boju ovisno
+			// od broja koji zauzimaju, takodjer postavljamo slovo na ta ista polja
+
+			// tako ce brod biti bijele boje s slovom S
+			// pirati crne boje s slovom P
+			// otoci bež boje s slovom I
+			// portal koraljne boje bez slova
+			// a more plave boje s ilustracijom valova korištenjem znaka ~
 			for (int i = 0; i < rowNum; i++) {
 				for (int j = 0; j < colNum; j++) {
 					int v = game.board.board[i][j];
@@ -131,22 +179,21 @@ public class GUI {
 					String name = null;
 
 					if (v == Board.SHIP) {
-						c = Color.YELLOW;
+						c = Color.WHITE;
 						name = "S";
 					} else if (v == Board.PIRATES) {
 						c = Color.BLACK;
 						name = "P";
 					} else if (v == Board.PORTAL) {
 						c = Color.getColor(null, new Color(249, 86, 86));
-						name = "DOOR";
+						name = "";
 					} else if (v == Board.ISLAND) {
 						c = Color.getColor(null, new Color(220, 182, 107));
 						name = "I";
 					} else if (v == Board.WRECK) {
-						c = Color.getColor(null, new Color(224, 12, 107));
-						name = "W"; 
-					}
-					else {
+						c = Color.getColor(null, new Color(220, 182, 107));
+						name = "W";
+					} else {
 						c = Color.getColor(null, new Color(1, 149, 203));
 						name = "~~";
 					}
@@ -156,14 +203,6 @@ public class GUI {
 					field[i][j].setForeground(Color.WHITE);
 				}
 			}
-
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
-
 }

@@ -1,5 +1,11 @@
 import java.util.Scanner;
 
+/* Klasu Main koristimo za igranje u konzoli
+ * 
+ * @author Ana-Marija Knezevic
+ * @version 1.0.0 (alfa)
+ * @since 18/1/2019
+ */
 public class Main {
 
 	public static void main(String[] args) {
@@ -9,6 +15,8 @@ public class Main {
 		Scanner input = new Scanner(System.in);
 		String in;
 		game.init();
+		System.out.println("Your board looks like this: \n");
+		game.board.toConsole();
 		System.out.println("Level: " + game.getLevel());
 		while (game.getLevel() < 6) {
 			if (game.end()) {
@@ -31,21 +39,21 @@ public class Main {
 			}
 			System.out.println("Enter your next move: ");
 			in = input.nextLine();
-			if (in.equals("W"))
+			if (in.equals("8"))
 				game.ship.changeDirection(Ship.UP);
-			else if (in.equals("E"))
+			else if (in.equals("9"))
 				game.ship.changeDirection(Ship.RIGHT_UP);
-			else if (in.equals("D"))
+			else if (in.equals("6"))
 				game.ship.changeDirection(Ship.RIGHT);
-			else if (in.equals("C"))
+			else if (in.equals("3"))
 				game.ship.changeDirection(Ship.RIGHT_DOWN);
-			else if (in.equals("S"))
+			else if (in.equals("2"))
 				game.ship.changeDirection(Ship.DOWN);
-			else if (in.equals("Y"))
+			else if (in.equals("1"))
 				game.ship.changeDirection(Ship.LEFT_DOWN);
-			else if (in.equals("A"))
+			else if (in.equals("4"))
 				game.ship.changeDirection(Ship.LEFT);
-			else if (in.equals("Q"))
+			else if (in.equals("7"))
 				game.ship.changeDirection(Ship.LEFT_UP);
 			game.moveShip();
 			try {

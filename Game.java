@@ -1,11 +1,16 @@
 import java.util.Random;
+/* Klasa Game predstavlja osnovnu logiku igre. 
+ * @author Ana-Marija Knezevic
+ * @version 1.0.0 (alfa)
+ * @since 18/1/2019
+ * */
 
 public class Game {
 	private int numOfPirates = 1;
 	private int numOfIslands = 2;
+	private int numOfLevels = 6;
 	private int level = 1;
 	private boolean gameOver = false;
-	private int copyNumOfPirates = numOfPirates;
 	Ship ship;
 	Board board;
 	Pirate[] pirates;
@@ -18,11 +23,13 @@ public class Game {
 	void setLevel(int lvl) {
 		this.level = lvl;
 	}
-	
+	int getNumOfLevels() {
+		return this.numOfLevels;
+	}
 	// restart metoda
 	void restart() {
 		this.level = 1;
-		this.numOfIslands = 1;
+		this.numOfIslands = 2;
 		this.numOfPirates = 1;
 
 	}
@@ -46,11 +53,9 @@ public class Game {
 		int i = 0;
 		pirates = new Pirate[this.numOfPirates];
 		while (i < this.numOfPirates) {
-			// Random pirate position row and to be atleast 5 places away from player
 			randomRow = randomPiratePosition.nextInt(12);
-			// Random pirate position col and to be atleast 5 places away from player
-			randomCol = randomPiratePosition.nextInt(15) + 4;
-			if (board.checkInitPirates(randomRow, randomCol)) {
+			randomCol = randomPiratePosition.nextInt(16) + 4;
+			if (board.checkPiratesPosition(randomRow, randomCol)) {
 				pirates[i] = new Pirate(randomRow, randomCol, Pirate.UP); 
 				board.setPirate(randomRow, randomCol);
 				i++;
@@ -60,11 +65,9 @@ public class Game {
 		
 		//slicno, postavljamo otoke na plocu
 		while (i < this.numOfIslands) {
-			// Random island position row and to be atleast 5 places away from player
 			randomRow = randomPiratePosition.nextInt(12);
-			// Random island position col and to be atleast 5 places away from player
 			randomCol = randomPiratePosition.nextInt(15) + 4;
-			if (board.checkInitPirates(randomRow, randomCol)) {
+			if (board.checkPiratesPosition(randomRow, randomCol)) {
 				board.setIsland(randomRow, randomCol);
 				i++;
 			}
@@ -81,7 +84,7 @@ public class Game {
 		if (checkMove(ship.getRow(), ship.getCol(), direction) && checkIsland(ship.getRow(), ship.getCol(), direction)) {
 			board.removeShip(ship.getRow(), ship.getCol());
 			ship.move();
-			if (board.setShip(ship.getRow(), ship.getCol()) == true || copyNumOfPirates < 0) {
+			if (board.setShip(ship.getRow(), ship.getCol()) == true) {
 				this.gameOver = true;
 			}
 			
@@ -99,7 +102,6 @@ public class Game {
 				pirates[i].move();
 				if (board.setPirate(pirates[i].getRow(), pirates[i].getCol())) {
 					pirates[i].setDestroyed(true);
-					copyNumOfPirates--;
 					if (board.board[this.ship.getRow()][this.ship.getCol()] != Board.SHIP)
 						this.gameOver = true;
 				}
@@ -206,13 +208,14 @@ public class Game {
 	
 	//provjerava ad li je brod uspio doci do luke
 	boolean nextLevel() {
-		// if player manages to get to portal, put him on next level
 		return this.ship.getRow() == 0 && this.ship.getCol() == this.board.getDimCol() - 1;
 	}
 	
 	//postavlja game over
 	void setGameOver(boolean gameOver) { 
+		System.out.println("GOVER");
 		this.gameOver = gameOver; 
+		System.out.println(this.gameOver);
 	}
 
 }

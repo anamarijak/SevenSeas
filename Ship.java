@@ -1,4 +1,12 @@
-
+/* Klasa Ship predstavlja glavnog igraca.
+ * Sadrzi informacije o brodicu kao sto su pozicija na 
+ * kojoj se nalazi kao i smjerovi u  kojima se moze kretati.
+ * 
+ * @author Ana-Marija Knezevic
+ * @version 1.0.0 (alfa)
+ * @since 18/1/2019
+ * 
+ */
 public class Ship {
 	private int row;
 	private int col;

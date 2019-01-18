@@ -1,4 +1,20 @@
-
+/*
+ * Klasa Board predstavlja nasu plocu za igranje po kojoj se
+ * brodovi i pirati krecu. Ploca je inicijalizirana kao dvodimenzionalni
+ * niz u kojem cijeli brojevi predstavljaju komponentu koja se nalazi na ploci.
+ * U klasi vidimo da su to brojevi od 0-5 i oni predstavljaju sljedece komponente: 
+ * 0 - polje je prazno 
+ * 1 - na polju je postavljen otok
+ * 2- na polju se nalazi prepreka koja nastaje sudaranjem dva pirata
+ * 3 - na polju se nalazi brod
+ * 4 - na polju se nalazi pirat
+ * 5 - na polju se nalze "vrata" ili luka koja nas vodi na sljedecu razinu.
+ * 
+ * @author Ana-Marija Knezevic
+ * @version 1.0.0 (alfa)
+ * @since 18/1/2019
+ *
+ */
 public class Board {
 	static final int EMPTY = 0;
 	static final int ISLAND = 1;
@@ -27,7 +43,11 @@ public class Board {
 	public int getDimCol() {
 		return dimCol;
 	}
-	//postatvlja brod
+
+	/*
+	 * Metoda koja provjerava postavljanje broda na poziciju Brod nije moguce
+	 * postaviti na poziciju koja je zauzeta nekom drugom komponentom.
+	 */
 	boolean setShip(int row, int col) {
 		if (this.board[row][col] == Board.WRECK || this.board[row][col] == Board.ISLAND
 				|| this.board[row][col] == Board.PIRATES) {
@@ -37,7 +57,8 @@ public class Board {
 		this.board[row][col] = Board.SHIP;
 		return false;
 	}
-	//postavlja pirate
+
+	// Provjerava poziciju za pirate
 	boolean setPirate(int row, int col) {
 		if (this.board[row][col] == Board.ISLAND) {
 			this.board[row][col] = Board.EMPTY;
@@ -69,14 +90,15 @@ public class Board {
 		this.board[row][col] = Board.EMPTY;
 	}
 
-	// da li je pozicija moguca
-	
-	boolean checkInitPirates(int row, int col) {
+	// Provjerava da li je pozicija moguca
+
+	boolean checkPiratesPosition(int row, int col) {
 		if (this.board[row][col] == 0)
 			return true;
 		return false;
 	}
-// ispis u konzolu
+
+	// Ispis u konzolu
 	void toConsole() {
 		for (int i = 0; i < Board.dimRow; i++) {
 			for (int j = 0; j < Board.dimCol; j++) {
